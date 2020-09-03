@@ -4,7 +4,7 @@ const router = Router();
 
 router
   .route("/")
-  .get((req, res) => res.send("Trainers Route"))
+  .get((req, res) => res.send("Trainers GET Route"))
   .post((req, res) => res.send("Trainers POST Route"))
   .put((req, res) => {
     res.statusCode = 403;
