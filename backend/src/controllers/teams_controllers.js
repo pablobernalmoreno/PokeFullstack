@@ -1,10 +1,22 @@
 const teamsController = {};
 
-teamsController.getTeams = (req, res) =>
-  res.json({ message: "Teams GET Route" });
+const TeamModel = require("../models/Team");
 
-teamsController.createTeam = (req, res) =>
-  res.json({ message: "Teams POST Route" });
+teamsController.getTeams = async (req, res) => {
+  const teams = await TeamModel.find();
+  res.json(teams);
+};
+
+teamsController.createTeam = async (req, res) => {
+  const { title, pokes, trainer } = req.body;
+  const newTeam = new TeamModel({
+    title,
+    pokes,
+    trainer,
+  });
+  await newTeam.save();
+  res.json({ message: `Team ${title} Saved` });
+};
 
 teamsController.updateTeams = (req, res) => {
   res.statusCode = 403;
@@ -16,8 +28,10 @@ teamsController.deleteTeams = (req, res) => {
   res.json({ message: "DELETE operation not supported on /api/teams" });
 };
 
-teamsController.getTeam = (req, res) =>
-  res.json({ message: `Team ${req.params.id} Route` });
+teamsController.getTeam = async (req, res) => {
+  const team = await TeamModel.findById(req.params.id);
+  res.json(team);
+};
 
 teamsController.recreateTeam = (req, res) => {
   res.statusCode = 403;
@@ -26,10 +40,18 @@ teamsController.recreateTeam = (req, res) => {
   });
 };
 
-teamsController.updateTeam = (req, res) =>
-  res.json({ message: `Team ${req.params.id} PUT Route` });
+teamsController.updateTeam = async (req, res) => {
+  const { title, pokes, trainer } = req.body;
+  await TeamModel.findOneAndUpdate(
+    { _id: req.params.id },
+    { title, pokes, trainer }
+  );
+  res.json({ message: `Team ${req.params.id} updated` });
+};
 
-teamsController.deleteTeam = (req, res) =>
+teamsController.deleteTeam = async (req, res) => {
+  const team = await TeamModel.findByIdAndDelete(req.params.id);
   res.json({ message: `Team ${req.params.id} DELETE Route` });
+};
 
 module.exports = teamsController;

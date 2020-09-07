@@ -1,10 +1,18 @@
 const trainersController = {};
 
-trainersController.getTrainers = (req, res) =>
-  res.json({ message: "Trainers GET Route" });
+const TrainerModel = require("../models/Trainer");
 
-trainersController.createTrainer = (req, res) =>
-  res.json({ message: "Trainers POST Route" });
+trainersController.getTrainers = async (req, res) => {
+  const trainers = await TrainerModel.find();
+  res.json(trainers);
+};
+
+trainersController.createTrainer = async (req, res) => {
+  const { name } = req.body;
+  const newTrainer = new TrainerModel({ name });
+  await newTrainer.save();
+  res.json({ message: "Trainers Created" });
+};
 
 trainersController.updateTrainers = (req, res) => {
   res.statusCode = 403;
@@ -16,8 +24,10 @@ trainersController.deleteTrainers = (req, res) => {
   res.json({ message: "DELETE operation not supported on /api/trainers" });
 };
 
-trainersController.getTrainer = (req, res) =>
-  res.json({ message: `Trainer ${req.params.id} Route` });
+trainersController.getTrainer = async (req, res) => {
+  const team = await TrainerModel.findById(req.params.id);
+  res.json(team);
+};
 
 trainersController.recreateTrainer = (req, res) => {
   res.statusCode = 403;
@@ -26,10 +36,15 @@ trainersController.recreateTrainer = (req, res) => {
   });
 };
 
-trainersController.updateTrainer = (req, res) =>
-  res.json({ message: `Trainer ${req.params.id} PUT Route` });
+trainersController.updateTrainer = async (req, res) => {
+  const { name } = req.body;
+  await TrainerModel.findByIdAndUpdate({ _id: req.params.id }, { name });
+  res.json({ message: `Trainer ${req.params.id} updated` });
+};
 
-trainersController.deleteTrainer = (req, res) =>
-  res.json({ message: `Trainer ${req.params.id} DELETE Route` });
+trainersController.deleteTrainer = async (req, res) => {
+  const trainer = await TrainerModel.findByIdAndDelete(req.params.id);
+  res.json({ message: `Trainer ${req.params.id} deleted` });
+};
 
 module.exports = trainersController;
