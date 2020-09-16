@@ -10,10 +10,12 @@ function App() {
   return (
     <Router>
       <Navigation />
-      <Route path="/" exact component={TeamsList} />
-      <Route path="/edit/:id" component={CreateTeam} />
-      <Route path="/create" component={CreateTeam} />
-      <Route path="/trainer" component={CreateTrainer} />
+      <div className="container p-4">
+        <Route path="/" exact component={TeamsList} />
+        <Route path="/edit/:id" component={CreateTeam} />
+        <Route path="/create" component={CreateTeam} />
+        <Route path="/trainer" component={CreateTrainer} />
+      </div>
     </Router>
   );
 }
