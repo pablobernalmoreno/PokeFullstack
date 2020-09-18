@@ -29,6 +29,11 @@ export default class CreateTrainer extends Component {
     this.getTrainers();
   };
 
+  deleteTrainer = async (id) => {
+    await axios.delete(`http://localhost:4000/api/trainers/${id}`);
+    this.getTrainers();
+  };
+
   render() {
     return (
       <div className="row">
@@ -56,6 +61,7 @@ export default class CreateTrainer extends Component {
               <li
                 className="list-group-item list-group-item-action"
                 key={trainer._id}
+                onDoubleClick={() => this.deleteTrainer(trainer._id)}
               >
                 {trainer.name}
               </li>
