@@ -7,13 +7,26 @@ export default class CreateTrainer extends Component {
     trainerName: "",
   };
 
-  async componentDidMount() {
+  componentDidMount() {
+    this.getTrainers();
+  }
+
+  async getTrainers() {
     const res = await axios.get("http://localhost:4000/api/trainers");
     this.setState({ trainers: res.data });
   }
 
-  trainerNameOnChange = (event) => {
+  onChangeTrainerName = (event) => {
     this.setState({ trainerName: event.target.value });
+  };
+
+  onSubmitTrainer = async (event) => {
+    event.preventDefault();
+    await axios.post("http://localhost:4000/api/trainers", {
+      name: this.state.trainerName,
+    });
+    this.setState({ trainerName: "" });
+    this.getTrainers();
   };
 
   render() {
@@ -22,14 +35,18 @@ export default class CreateTrainer extends Component {
         <div className="col-md-4">
           <div className="card card-body">
             <h3>Create Trainer</h3>
-            <form>
+            <form onSubmit={this.onSubmitTrainer}>
               <div className="form-group">
                 <input
                   className="form-control"
                   type="text"
-                  onChange={this.trainerNameOnChange}
+                  value={this.state.trainerName}
+                  onChange={this.onChangeTrainerName}
                 />
               </div>
+              <button type="submit" className="btn btn-primary">
+                Save
+              </button>
             </form>
           </div>
         </div>
