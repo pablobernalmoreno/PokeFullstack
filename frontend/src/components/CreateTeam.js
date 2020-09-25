@@ -5,7 +5,7 @@ export default class CreateTeam extends Component {
   state = {
     trainers: [],
     trainerChosen: "",
-    team: "",
+    title: "",
     pokes: "",
   };
 
@@ -15,11 +15,20 @@ export default class CreateTeam extends Component {
 
   async getTrainers() {
     const res = await axios.get("http://localhost:4000/api/trainers");
-    this.setState({ trainers: res.data });
+    this.setState({
+      trainers: res.data,
+      trainerChosen: res.data[0].name,
+    });
   }
 
-  onSubmitTeam = (event) => {
+  onSubmitTeam = async (event) => {
     event.preventDefault();
+    const newTeam = {
+      title: this.state.title,
+      pokes: [{ name: this.state.pokes }],
+      trainer: this.state.trainerChosen,
+    };
+    await axios.post("http://localhost:4000/api/teams", newTeam);
   };
 
   onInputChange = (event) => {
@@ -53,8 +62,8 @@ export default class CreateTeam extends Component {
             <input
               type="text"
               className="form-control"
-              placeholder="Team"
-              name="team"
+              placeholder="Team title"
+              name="title"
               onChange={this.onInputChange}
               required
             ></input>
