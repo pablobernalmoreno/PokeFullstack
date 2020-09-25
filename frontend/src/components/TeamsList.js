@@ -9,10 +9,14 @@ export default class TeamsList extends Component {
   async getTeams() {
     const res = await axios.get("http://localhost:4000/api/teams");
     this.setState({ teams: res.data });
-    console.log(res);
   }
 
   componentDidMount() {
+    this.getTeams();
+  }
+
+  async deleteTeam(id) {
+    await axios.delete(`http://localhost:4000/api/teams/${id}`);
     this.getTeams();
   }
 
@@ -31,7 +35,14 @@ export default class TeamsList extends Component {
                   {poke.name}
                 </div>
               ))}
-              
+              <div className="card-footer">
+                <button
+                  className="btn btn-danger"
+                  onClick={() => this.deleteTeam(team._id)}
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
         ))}
