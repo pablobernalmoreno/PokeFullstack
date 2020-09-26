@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 export default class TeamsList extends Component {
   state = {
@@ -26,9 +27,14 @@ export default class TeamsList extends Component {
         {this.state.teams.map((team) => (
           <div className="col-md-4 p-2" key={team._id}>
             <div className="card">
-              <div className="card-header">
-                <h5>{team.title}</h5>
-                <h6>{team.trainer}</h6>
+              <div className="card-header d-flex justify-content-between">
+                <div>
+                  <h5>{team.title}</h5>
+                  <h6>{team.trainer}</h6>
+                </div>
+                <div>
+                  <Link className="btn btn-secondary" to={`/edit/${team._id}`}>Edit</Link>
+                </div>
               </div>
               {team.pokes.map((poke) => (
                 <div className="card-body" key={poke._id}>
