@@ -1,16 +1,21 @@
 import React, { Component } from "react";
 import axios from "axios";
-
 export default class CreateTeam extends Component {
   state = {
     trainers: [],
     trainerChosen: "",
     title: "",
     pokes: "",
+    edit: false,
+    idOfTeam: "",
   };
 
   componentDidMount() {
     this.getTrainers();
+    if (this.props.match.params.id) {
+      this.setState({ edit: true });
+      this.setState({ idOfTeam: this.props.match.params.id });
+    }
   }
 
   async getTrainers() {
@@ -28,7 +33,15 @@ export default class CreateTeam extends Component {
       pokes: [{ name: this.state.pokes }],
       trainer: this.state.trainerChosen,
     };
-    await axios.post("http://localhost:4000/api/teams", newTeam);
+    if (this.state.edit) {
+      await axios.put(
+        `http://localhost:4000/api/teams/${this.state.idOfTeam}`,
+        newTeam
+      );
+    } else {
+      await axios.post("http://localhost:4000/api/teams", newTeam);
+    }
+    window.location.href = "/";
   };
 
   onInputChange = (event) => {
