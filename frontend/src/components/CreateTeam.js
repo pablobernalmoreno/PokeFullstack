@@ -5,7 +5,9 @@ export default class CreateTeam extends Component {
     trainers: [],
     trainerChosen: "",
     title: "",
-    pokes: "",
+    pokes: [],
+    initialPoke: "",
+    poke2: "",
     edit: false,
     idOfTeam: "",
   };
@@ -16,6 +18,7 @@ export default class CreateTeam extends Component {
       this.setState({ edit: true });
       this.setState({ idOfTeam: this.props.match.params.id });
     }
+    this.getPokes();
   }
 
   async getTrainers() {
@@ -26,11 +29,22 @@ export default class CreateTeam extends Component {
     });
   }
 
+  async getPokes() {
+    const res = await axios.get(
+      "https://pokeapi.co/api/v2/pokemon?limit=2000&offset=0"
+    );
+    this.setState({
+      pokes: res.data.results,
+      initialPoke: res.data.results[0].name,
+      poke2: res.data.results[0].name,
+    });
+  }
+
   onSubmitTeam = async (event) => {
     event.preventDefault();
     const newTeam = {
       title: this.state.title,
-      pokes: [{ name: this.state.pokes }],
+      pokes: [{ name: this.state.initialPoke }, { name: this.state.poke2 }],
       trainer: this.state.trainerChosen,
     };
     if (this.state.edit) {
@@ -83,13 +97,32 @@ export default class CreateTeam extends Component {
           </div>
 
           <div className="form-group">
-            <textarea
-              name="pokes"
+            <select
+              name="initialPoke"
               className="form-control"
-              placeholder="Pokémon"
               onChange={this.onInputChange}
               required
-            ></textarea>
+            >
+              {this.state.pokes.map((poke) => (
+                <option key={poke.url} value={poke.name}>
+                  {poke.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="form-group">
+            <select
+              name="poke2"
+              className="form-control"
+              onChange={this.onInputChange}
+              required
+            >
+              {this.state.pokes.map((poke) => (
+                <option key={poke.url} value={poke.name}>
+                  {poke.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <form onSubmit={this.onSubmitTeam}>
